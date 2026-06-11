@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ============================================================================
-// Follow Builders — Prepare Digest (v2.1: RSS rotation + bilingual default)
+// Follow Builders — Prepare Digest (v2.2: RSS rotation + bilingual default)
 // ============================================================================
 // Changes:
 // - RSS: fetch only 3 sources per day, rotating through the full list
@@ -40,7 +40,18 @@ async function fetchText(url) {
   return res.text();
 }
 
-// -- RSS Parsing (zero dependencies) -----------------------------------------
+// -- RSS: daily rotation (3 sources per day) --------------------------------
+
+function getDailyBatch(sources, batchSize = 3) {
+  if (!sources || !sources.length) return [];
+  const dayIndex = Math.floor(Date.now() / 86400000);
+  const totalBatches = Math.ceil(sources.length / batchSize);
+  const batchIndex = dayIndex % totalBatches;
+  const start = batchIndex * batchSize;
+  return sources.slice(start, start + batchSize);
+}
+
+// -- RSS Parsing (zero dependencies) ----------------------------------------
 
 async function fetchRSS(url) {
   try {
@@ -58,12 +69,12 @@ async function fetchRSS(url) {
 
 function parseRSS(xml) {
   const items = [];
-  const itemRegex = /<item[\s\S]*?<\/item>/g;
+  const itemRegex = /<\u0069tem[\s\S]*?<\/\u0069tem>/g;
   let match;
   while ((match = itemRegex.exec(xml)) !== null) {
     items.push(parseItem(match[0]));
   }
-  const entryRegex = /<entry[\s\S]*?<\/entry>/g;
+  const entryRegex = /<\u0065ntry[\s\S]*?<\/\u0065ntry>/g;
   while ((match = entryRegex.exec(xml)) !== null) {
     items.push(parseEntry(match[0]));
   }
@@ -91,13 +102,13 @@ function parseEntry(entry) {
 }
 
 function extractTag(xml, tag) {
-  const regex = new RegExp(`<${tag}[^>]*>([\s\S]*?)</${tag}>`, 'i');
+  const regex = new RegExp(`\u003c${tag}[^\u003e]*\u003e([\\\\s\\\\S]*?)\u003c\\/${tag}\u003e`, 'i');
   const m = xml.match(regex);
-  return m ? m[1].replace(/<[^>]+>/g, '').trim() : null;
+  return m ? m[1].replace(/\u003c[^\u003e]+\u003e/g, '').trim() : null;
 }
 
 function extractAttr(xml, tag, attr) {
-  const regex = new RegExp(`<${tag}[^>]*${attr}=["']([^"']+)["'][^>]*>`, 'i');
+  const regex = new RegExp(`\u003c${tag}[^\u003e]*${attr}=[\"']([^\"']+)[\"'][^\u003e]*\u003e`, 'i');
   const m = xml.match(regex);
   return m ? m[1].trim() : null;
 }
@@ -127,30 +138,15 @@ async function fetchRSSFeeds(sources) {
   return results.filter(Boolean);
 }
 
-// -- Daily rotation helper ---------------------------------------------------
-
-function getDailyBatch(sources, batchSize = 3) {
-  if (!sources || !sources.length) return [];
-  // Use UTC days since epoch for consistent rotation
-  const dayIndex = Math.floor(Date.now() / 86400000);
-  const totalBatches = Math.max(1, Math.ceil(sources.length / batchSize));
-  const batchIndex = dayIndex % totalBatches;
-  const start = batchIndex * batchSize;
-  const end = Math.min(start + batchSize, sources.length);
-  return sources.slice(start, end);
-}
-
 // -- Main --------------------------------------------------------------------
 
 async function main() {
   const errors = [];
 
-  // Default to bilingual
   let config = { language: 'bilingual', frequency: 'daily', delivery: { method: 'stdout' } };
   if (existsSync(CONFIG_PATH)) {
     try {
-      const userConfig = JSON.parse(await readFile(CONFIG_PATH, 'utf-8'));
-      config = { ...config, ...userConfig };
+      config = JSON.parse(await readFile(CONFIG_PATH, 'utf-8'));
     } catch (err) {
       errors.push(`Could not read config: ${err.message}`);
     }
@@ -166,11 +162,12 @@ async function main() {
   if (!feedPodcasts) errors.push('Could not fetch podcast feed');
   if (!feedBlogs) errors.push('Could not fetch blog feed');
 
-  // 3 RSS sources per day, rotating
   let rssPosts = [];
+  let rssSourcesToday = [];
   if (feedBlogs?.rssSources && feedBlogs.rssSources.length > 0) {
     try {
       const dailySources = getDailyBatch(feedBlogs.rssSources, 3);
+      rssSourcesToday = dailySources.map(s => s.name);
       rssPosts = await fetchRSSFeeds(dailySources);
     } catch (err) {
       errors.push(`RSS fetch error: ${err.message}`);
@@ -223,7 +220,7 @@ async function main() {
       totalTweets: (feedX?.x || []).reduce((sum, a) => sum + a.tweets.length, 0),
       blogPosts: allBlogs.length,
       rssSourcesFetched: rssPosts.length,
-      rssSourcesToday: feedBlogs?.rssSources ? getDailyBatch(feedBlogs.rssSources, 3).map(s => s.name) : [],
+      rssSourcesToday,
       feedGeneratedAt: feedX?.generatedAt || feedPodcasts?.generatedAt || feedBlogs?.generatedAt || null
     },
     prompts,
