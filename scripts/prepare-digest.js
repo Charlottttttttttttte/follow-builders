@@ -87,13 +87,13 @@ function parseEntry(entry) {
 }
 
 function extractTag(xml, tag) {
-  const regex = new RegExp(`<<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
+  const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
   const m = xml.match(regex);
-  return m ? m[1].replace(/<<[^>]+>/g, '').trim() : null;
+  return m ? m[1].replace(/<[^>]+>/g, '').trim() : null;
 }
 
 function extractAttr(xml, tag, attr) {
-  const regex = new RegExp(`<<${tag}[^>]*${attr}=["']([^"']+)["'][^>]*>`, 'i');
+  const regex = new RegExp(`<${tag}[^>]*${attr}=["']([^"']+)["'][^>]*>`, 'i');
   const m = xml.match(regex);
   return m ? m[1].trim() : null;
 }
