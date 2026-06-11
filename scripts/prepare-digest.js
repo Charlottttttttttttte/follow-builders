@@ -1,19 +1,6 @@
 #!/usr/bin/env node
-
 // ============================================================================
-// Follow Builders — Prepare Digest
-// ============================================================================
-// Gathers everything the LLM needs to produce a digest:
-// - Fetches the central feeds (tweets + podcasts)
-// - Fetches the latest prompts from GitHub
-// - Reads the user's config (language, delivery method)
-// - Outputs a single JSON blob to stdout
-//
-// The LLM's ONLY job is to read this JSON, remix the content, and output
-// the digest text. Everything else is handled here deterministically.
-//
-// Usage: node prepare-digest.js
-// Output: JSON to stdout
+// Follow Builders — Prepare Digest (v2 with RSS support)
 // ============================================================================
 
 import { readFile, mkdir } from 'fs/promises';
@@ -21,16 +8,14 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
-// -- Constants ---------------------------------------------------------------
-
 const USER_DIR = join(homedir(), '.follow-builders');
 const CONFIG_PATH = join(USER_DIR, 'config.json');
 
-const FEED_X_URL = 'https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/feed-x.json';
-const FEED_PODCASTS_URL = 'https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/feed-podcasts.json';
-const FEED_BLOGS_URL = 'https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/feed-blogs.json';
+const FEED_X_URL = 'https://raw.githubusercontent.com/Charlottttttttttttte/follow-builders/main/feed-x.json';
+const FEED_PODCASTS_URL = 'https://raw.githubusercontent.com/Charlottttttttttttte/follow-builders/main/feed-podcasts.json';
+const FEED_BLOGS_URL = 'https://raw.githubusercontent.com/Charlottttttttttttte/follow-builders/main/feed-blogs.json';
 
-const PROMPTS_BASE = 'https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/prompts';
+const PROMPTS_BASE = 'https://raw.githubusercontent.com/Charlottttttttttttte/follow-builders/main/prompts';
 const PROMPT_FILES = [
   'summarize-podcast.md',
   'summarize-tweets.md',
@@ -38,8 +23,6 @@ const PROMPT_FILES = [
   'digest-intro.md',
   'translate.md'
 ];
-
-// -- Fetch helpers -----------------------------------------------------------
 
 async function fetchJSON(url) {
   const res = await fetch(url);
@@ -53,12 +36,101 @@ async function fetchText(url) {
   return res.text();
 }
 
+// -- RSS Parsing (zero dependencies) -----------------------------------------
+
+async function fetchRSS(url) {
+  try {
+    const res = await fetch(url, {
+      headers: { 'Accept': 'application/rss+xml, application/atom+xml, application/xml' },
+      signal: AbortSignal.timeout(15000)
+    });
+    if (!res.ok) return null;
+    const text = await res.text();
+    return parseRSS(text);
+  } catch (err) {
+    return null;
+  }
+}
+
+function parseRSS(xml) {
+  const items = [];
+  const itemRegex = /<item[\s\S]*?<\/item>/g;
+  let match;
+  while ((match = itemRegex.exec(xml)) !== null) {
+    const item = match[0];
+    items.push(parseItem(item));
+  }
+  const entryRegex = /<entry[\s\S]*?<\/entry>/g;
+  while ((match = entryRegex.exec(xml)) !== null) {
+    const entry = match[0];
+    items.push(parseEntry(entry));
+  }
+  return items;
+}
+
+function parseItem(item) {
+  return {
+    title: extractTag(item, 'title') || '',
+    link: extractTag(item, 'link') || extractAttr(item, 'link', 'href') || '',
+    description: extractTag(item, 'description') || extractTag(item, 'summary') || '',
+    pubDate: extractTag(item, 'pubDate') || extractTag(item, 'published') || '',
+    content: extractTag(item, 'content:encoded') || extractTag(item, 'content') || extractTag(item, 'description') || ''
+  };
+}
+
+function parseEntry(entry) {
+  return {
+    title: extractTag(entry, 'title') || '',
+    link: extractAttr(entry, 'link', 'href') || extractTag(entry, 'link') || '',
+    description: extractTag(entry, 'summary') || extractTag(entry, 'content') || '',
+    pubDate: extractTag(entry, 'published') || extractTag(entry, 'updated') || extractTag(entry, 'pubDate') || '',
+    content: extractTag(entry, 'content') || extractTag(entry, 'summary') || ''
+  };
+}
+
+function extractTag(xml, tag) {
+  const regex = new RegExp(`<<${tag}[^>]*>([\s\S]*?)</${tag}>`, 'i');
+  const m = xml.match(regex);
+  return m ? m[1].replace(/<<[^>]+>/g, '').trim() : null;
+}
+
+function extractAttr(xml, tag, attr) {
+  const regex = new RegExp(`<<${tag}[^>]*${attr}=["']([^"']+)["'][^>]*>`, 'i');
+  const m = xml.match(regex);
+  return m ? m[1].trim() : null;
+}
+
+// -- RSS Batch Fetching ------------------------------------------------------
+
+async function fetchRSSFeeds(sources, maxFeeds = 20, maxItemsPerFeed = 3) {
+  if (!sources || !sources.length) return [];
+  
+  const selected = sources.slice(0, maxFeeds);
+  const results = await Promise.all(
+    selected.map(async (src) => {
+      const items = await fetchRSS(src.rssUrl);
+      if (!items || !items.length) return null;
+      return {
+        source: 'blog',
+        name: src.name,
+        title: items[0].title,
+        url: items[0].link || src.htmlUrl,
+        publishedAt: items[0].pubDate,
+        author: '',
+        description: items[0].description,
+        content: items[0].content
+      };
+    })
+  );
+  
+  return results.filter(Boolean);
+}
+
 // -- Main --------------------------------------------------------------------
 
 async function main() {
   const errors = [];
 
-  // 1. Read user config
   let config = {
     language: 'en',
     frequency: 'daily',
@@ -72,7 +144,6 @@ async function main() {
     }
   }
 
-  // 2. Fetch all three feeds
   const [feedX, feedPodcasts, feedBlogs] = await Promise.all([
     fetchJSON(FEED_X_URL),
     fetchJSON(FEED_PODCASTS_URL),
@@ -82,28 +153,16 @@ async function main() {
   if (!feedX) errors.push('Could not fetch tweet feed');
   if (!feedPodcasts) errors.push('Could not fetch podcast feed');
   if (!feedBlogs) errors.push('Could not fetch blog feed');
-  if (feedX?.errors?.length) {
-    errors.push(
-      ...feedX.errors.map((error) => `Tweet feed problem: ${error}`)
-    );
-  }
-  if (feedPodcasts?.errors?.length) {
-    errors.push(
-      ...feedPodcasts.errors.map((error) => `Podcast feed problem: ${error}`)
-    );
-  }
-  if (feedBlogs?.errors?.length) {
-    errors.push(
-      ...feedBlogs.errors.map((error) => `Blog feed problem: ${error}`)
-    );
+
+  let rssPosts = [];
+  if (feedBlogs?.rssSources && feedBlogs.rssSources.length > 0) {
+    try {
+      rssPosts = await fetchRSSFeeds(feedBlogs.rssSources, 20, 3);
+    } catch (err) {
+      errors.push(`RSS fetch error: ${err.message}`);
+    }
   }
 
-  // 3. Load prompts with priority: user custom > remote (GitHub) > local default
-  //
-  // If the user has a custom prompt at ~/.follow-builders/prompts/<file>,
-  // use that (they personalized it — don't overwrite with remote updates).
-  // Otherwise, fetch the latest from GitHub so they get central improvements.
-  // If GitHub is unreachable, fall back to the local copy shipped with the skill.
   const prompts = {};
   const scriptDir = decodeURIComponent(new URL('.', import.meta.url).pathname);
   const localPromptsDir = join(scriptDir, '..', 'prompts');
@@ -114,20 +173,15 @@ async function main() {
     const userPath = join(userPromptsDir, filename);
     const localPath = join(localPromptsDir, filename);
 
-    // Priority 1: user's custom prompt (they personalized it)
     if (existsSync(userPath)) {
       prompts[key] = await readFile(userPath, 'utf-8');
       continue;
     }
-
-    // Priority 2: latest from GitHub (central updates)
     const remote = await fetchText(`${PROMPTS_BASE}/${filename}`);
     if (remote) {
       prompts[key] = remote;
       continue;
     }
-
-    // Priority 3: local copy shipped with the skill
     if (existsSync(localPath)) {
       prompts[key] = await readFile(localPath, 'utf-8');
     } else {
@@ -135,36 +189,29 @@ async function main() {
     }
   }
 
-  // 4. Build the output — everything the LLM needs in one blob
+  const staticBlogs = feedBlogs?.blogs || [];
+  const allBlogs = [...staticBlogs, ...rssPosts];
+
   const output = {
     status: 'ok',
     generatedAt: new Date().toISOString(),
-
-    // User preferences
     config: {
       language: config.language || 'en',
       frequency: config.frequency || 'daily',
       delivery: config.delivery || { method: 'stdout' }
     },
-
-    // Content to remix
     podcasts: feedPodcasts?.podcasts || [],
     x: feedX?.x || [],
-    blogs: feedBlogs?.blogs || [],
-
-    // Stats for the LLM to reference
+    blogs: allBlogs,
     stats: {
       podcastEpisodes: feedPodcasts?.podcasts?.length || 0,
       xBuilders: feedX?.x?.length || 0,
       totalTweets: (feedX?.x || []).reduce((sum, a) => sum + a.tweets.length, 0),
-      blogPosts: feedBlogs?.blogs?.length || 0,
+      blogPosts: allBlogs.length,
+      rssSourcesFetched: rssPosts.length,
       feedGeneratedAt: feedX?.generatedAt || feedPodcasts?.generatedAt || feedBlogs?.generatedAt || null
     },
-
-    // Prompts — the LLM reads these and follows the instructions
     prompts,
-
-    // Non-fatal errors
     errors: errors.length > 0 ? errors : undefined
   };
 
