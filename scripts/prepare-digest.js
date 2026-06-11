@@ -5,6 +5,7 @@
 // Changes:
 // - RSS: fetch only 3 sources per day, rotating through the full list
 // - Default language: bilingual
+// - Fix CDATA unwrapping in extractTag
 // ============================================================================
 
 import { readFile } from 'fs/promises';
@@ -69,12 +70,12 @@ async function fetchRSS(url) {
 
 function parseRSS(xml) {
   const items = [];
-  const itemRegex = /<\u0069tem[\s\S]*?<\/\u0069tem>/g;
+  const itemRegex = /<<item[\s\S]*?<<\/item>/g;
   let match;
   while ((match = itemRegex.exec(xml)) !== null) {
     items.push(parseItem(match[0]));
   }
-  const entryRegex = /<\u0065ntry[\s\S]*?<\/\u0065ntry>/g;
+  const entryRegex = /<<entry[\s\S]*?<<\/entry>/g;
   while ((match = entryRegex.exec(xml)) !== null) {
     items.push(parseEntry(match[0]));
   }
@@ -102,13 +103,18 @@ function parseEntry(entry) {
 }
 
 function extractTag(xml, tag) {
-  const regex = new RegExp(`\u003c${tag}[^\u003e]*\u003e([\\\\s\\\\S]*?)\u003c\\/${tag}\u003e`, 'i');
+  const regex = new RegExp(`<<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
   const m = xml.match(regex);
-  return m ? m[1].replace(/\u003c[^\u003e]+\u003e/g, '').trim() : null;
+  if (!m) return null;
+  let content = m[1];
+  // Unwrap CDATA if present - using regex literal with escaped brackets
+  content = content.replace(/<<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1');
+  content = content.replace(/<<[^>]+>/g, '').trim();
+  return content || null;
 }
 
 function extractAttr(xml, tag, attr) {
-  const regex = new RegExp(`\u003c${tag}[^\u003e]*${attr}=[\"']([^\"']+)[\"'][^\u003e]*\u003e`, 'i');
+  const regex = new RegExp(`<<${tag}[^>]*${attr}=["']([^"']+)["'][^>]*>`, 'i');
   const m = xml.match(regex);
   return m ? m[1].trim() : null;
 }
