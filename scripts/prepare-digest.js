@@ -3,7 +3,7 @@
 // Follow Builders — Prepare Digest (v2 with RSS support)
 // ============================================================================
 
-import { readFile, mkdir } from 'fs/promises';
+import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
@@ -41,7 +41,7 @@ async function fetchText(url) {
 async function fetchRSS(url) {
   try {
     const res = await fetch(url, {
-      headers: { 'Accept': 'application/rss+xml, application/atom+xml, application/xml' },
+      headers: { Accept: 'application/rss+xml, application/atom+xml, application/xml' },
       signal: AbortSignal.timeout(15000)
     });
     if (!res.ok) return null;
@@ -57,13 +57,11 @@ function parseRSS(xml) {
   const itemRegex = /<item[\s\S]*?<\/item>/g;
   let match;
   while ((match = itemRegex.exec(xml)) !== null) {
-    const item = match[0];
-    items.push(parseItem(item));
+    items.push(parseItem(match[0]));
   }
   const entryRegex = /<entry[\s\S]*?<\/entry>/g;
   while ((match = entryRegex.exec(xml)) !== null) {
-    const entry = match[0];
-    items.push(parseEntry(entry));
+    items.push(parseEntry(match[0]));
   }
   return items;
 }
@@ -89,22 +87,22 @@ function parseEntry(entry) {
 }
 
 function extractTag(xml, tag) {
-  const regex = new RegExp(`<${tag}[^>]*>([\s\S]*?)</${tag}>`, 'i');
+  const regex = new RegExp(`<<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
   const m = xml.match(regex);
-  return m ? m[1].replace(/<[^>]+>/g, '').trim() : null;
+  return m ? m[1].replace(/<<[^>]+>/g, '').trim() : null;
 }
 
 function extractAttr(xml, tag, attr) {
-  const regex = new RegExp(`<${tag}[^>]*${attr}=["']([^"']+)["'][^>]*>`, 'i');
+  const regex = new RegExp(`<<${tag}[^>]*${attr}=["']([^"']+)["'][^>]*>`, 'i');
   const m = xml.match(regex);
   return m ? m[1].trim() : null;
 }
 
 // -- RSS Batch Fetching ------------------------------------------------------
 
-async function fetchRSSFeeds(sources, maxFeeds = 20, maxItemsPerFeed = 3) {
+async function fetchRSSFeeds(sources, maxFeeds = 20) {
   if (!sources || !sources.length) return [];
-  
+
   const selected = sources.slice(0, maxFeeds);
   const results = await Promise.all(
     selected.map(async (src) => {
@@ -122,7 +120,7 @@ async function fetchRSSFeeds(sources, maxFeeds = 20, maxItemsPerFeed = 3) {
       };
     })
   );
-  
+
   return results.filter(Boolean);
 }
 
@@ -131,11 +129,7 @@ async function fetchRSSFeeds(sources, maxFeeds = 20, maxItemsPerFeed = 3) {
 async function main() {
   const errors = [];
 
-  let config = {
-    language: 'en',
-    frequency: 'daily',
-    delivery: { method: 'stdout' }
-  };
+  let config = { language: 'en', frequency: 'daily', delivery: { method: 'stdout' } };
   if (existsSync(CONFIG_PATH)) {
     try {
       config = JSON.parse(await readFile(CONFIG_PATH, 'utf-8'));
@@ -157,7 +151,7 @@ async function main() {
   let rssPosts = [];
   if (feedBlogs?.rssSources && feedBlogs.rssSources.length > 0) {
     try {
-      rssPosts = await fetchRSSFeeds(feedBlogs.rssSources, 20, 3);
+      rssPosts = await fetchRSSFeeds(feedBlogs.rssSources, 20);
     } catch (err) {
       errors.push(`RSS fetch error: ${err.message}`);
     }
@@ -218,10 +212,7 @@ async function main() {
   console.log(JSON.stringify(output, null, 2));
 }
 
-main().catch(err => {
-  console.error(JSON.stringify({
-    status: 'error',
-    message: err.message
-  }));
+main().catch((err) => {
+  console.error(JSON.stringify({ status: 'error', message: err.message }));
   process.exit(1);
 });
