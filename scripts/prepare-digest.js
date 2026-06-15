@@ -1,11 +1,6 @@
 #!/usr/bin/env node
 // ============================================================================
-// Follow Builders — Prepare Digest (v2.2: RSS rotation + bilingual default)
-// ============================================================================
-// Changes:
-// - RSS: fetch only 3 sources per day, rotating through the full list
-// - Default language: bilingual
-// - Fix CDATA unwrapping in extractTag
+// Follow Builders — Prepare Digest (v3: RSS rotation + bilingual + CDATA fix)
 // ============================================================================
 
 import { readFile } from 'fs/promises';
@@ -16,8 +11,8 @@ import { homedir } from 'os';
 const USER_DIR = join(homedir(), '.follow-builders');
 const CONFIG_PATH = join(USER_DIR, 'config.json');
 
-const FEED_X_URL = 'https://raw.githubusercontent.com/Charlottttttttttttte/follow-builders/main/feed-x.json';
-const FEED_PODCASTS_URL = 'https://raw.githubusercontent.com/Charlottttttttttttte/follow-builders/main/feed-podcasts.json';
+const FEED_X_URL = 'https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/feed-x.json';
+const FEED_PODCASTS_URL = 'https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/feed-podcasts.json';
 const FEED_BLOGS_URL = 'https://raw.githubusercontent.com/Charlottttttttttttte/follow-builders/main/feed-blogs.json';
 
 const PROMPTS_BASE = 'https://raw.githubusercontent.com/Charlottttttttttttte/follow-builders/main/prompts';
@@ -70,12 +65,12 @@ async function fetchRSS(url) {
 
 function parseRSS(xml) {
   const items = [];
-  const itemRegex = /<<item[\s\S]*?<<\/item>/g;
+  const itemRegex = /<item[\s\S]*?<\/item>/g;
   let match;
   while ((match = itemRegex.exec(xml)) !== null) {
     items.push(parseItem(match[0]));
   }
-  const entryRegex = /<<entry[\s\S]*?<<\/entry>/g;
+  const entryRegex = /<entry[\s\S]*?<\/entry>/g;
   while ((match = entryRegex.exec(xml)) !== null) {
     items.push(parseEntry(match[0]));
   }
@@ -103,29 +98,31 @@ function parseEntry(entry) {
 }
 
 function extractTag(xml, tag) {
-  const regex = new RegExp(`<<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
+  const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\/${tag}>`, 'i');
   const m = xml.match(regex);
   if (!m) return null;
   let content = m[1];
-  // Unwrap CDATA if present - using regex literal with escaped brackets
-  content = content.replace(/<<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1');
-  content = content.replace(/<<[^>]+>/g, '').trim();
+  // Unwrap CDATA if present
+  content = content.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1');
+  // Strip any remaining inner HTML tags
+  content = content.replace(/<[^>]+>/g, '').trim();
   return content || null;
 }
 
 function extractAttr(xml, tag, attr) {
-  const regex = new RegExp(`<<${tag}[^>]*${attr}=["']([^"']+)["'][^>]*>`, 'i');
+  const regex = new RegExp(`<${tag}[^>]*${attr}=["']([^"']+)["'][^>]*>`, 'i');
   const m = xml.match(regex);
   return m ? m[1].trim() : null;
 }
 
-// -- RSS Batch Fetching ------------------------------------------------------
+// -- RSS Batch Fetching (with rotation) --------------------------------------
 
 async function fetchRSSFeeds(sources) {
-  if (!sources || !sources.length) return [];
+  const batch = getDailyBatch(sources, 3);
+  if (!batch.length) return [];
 
   const results = await Promise.all(
-    sources.map(async (src) => {
+    batch.map(async (src) => {
       const items = await fetchRSS(src.rssUrl);
       if (!items || !items.length) return null;
       return {
@@ -169,12 +166,9 @@ async function main() {
   if (!feedBlogs) errors.push('Could not fetch blog feed');
 
   let rssPosts = [];
-  let rssSourcesToday = [];
   if (feedBlogs?.rssSources && feedBlogs.rssSources.length > 0) {
     try {
-      const dailySources = getDailyBatch(feedBlogs.rssSources, 3);
-      rssSourcesToday = dailySources.map(s => s.name);
-      rssPosts = await fetchRSSFeeds(dailySources);
+      rssPosts = await fetchRSSFeeds(feedBlogs.rssSources);
     } catch (err) {
       errors.push(`RSS fetch error: ${err.message}`);
     }
@@ -226,7 +220,6 @@ async function main() {
       totalTweets: (feedX?.x || []).reduce((sum, a) => sum + a.tweets.length, 0),
       blogPosts: allBlogs.length,
       rssSourcesFetched: rssPosts.length,
-      rssSourcesToday,
       feedGeneratedAt: feedX?.generatedAt || feedPodcasts?.generatedAt || feedBlogs?.generatedAt || null
     },
     prompts,
