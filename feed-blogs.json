@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T09:30:30.585Z",
+  "generatedAt": "2026-06-26T09:52:33.509Z",
   "sources": [
     {
       "source": "blog",
@@ -531,6 +531,6 @@
     "rssSources": 92,
     "rssSourcesFetched": 3,
     "rssSourcesTotal": 92,
-    "staticPosts": 2
+    "staticPosts": 6
   }
 }
