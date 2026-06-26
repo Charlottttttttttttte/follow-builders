@@ -2,52 +2,43 @@ name: Generate Feeds
 
 on:
   schedule:
-    # All feeds (tweets, podcasts, blogs): once daily at 6:17am UTC
-    - cron: '17 6 * * *'
+    - cron: '17 6 * * *'  # UTC 6:17（避开高峰期，31个batch正好一轮）
   workflow_dispatch:
-    inputs:
-      mode:
-        description: 'What to fetch'
-        required: false
-        default: 'all'
-        type: choice
-        options:
-          - all
-          - tweets-only
-          - podcasts-only
-          - blogs-only
+
+permissions:
+  contents: write
 
 jobs:
   generate:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          node-version: '20'
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install dependencies
-        run: cd scripts && npm install
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
 
-      - name: Generate feeds
-        env:
-          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
-          POD2TXT_API_KEY: ${{ secrets.POD2TXT_API_KEY }}
+      - name: Fetch upstream feeds
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.mode }}" != "all" ]; then
-            cd scripts && node generate-feed.js --${{ inputs.mode }}
-          else
-            cd scripts && node generate-feed.js
-          fi
+          curl -sL -o /tmp/feed-x.json https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/feed-x.json
+          curl -sL -o /tmp/feed-podcasts.json https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/feed-podcasts.json
+          curl -sL -o /tmp/feed-blogs-upstream.json https://raw.githubusercontent.com/zarazhangrui/follow-builders/main/feed-blogs.json
 
-      - name: Commit and push feeds
+      - name: Generate RSS feeds
+        run: node scripts/generate-rss-feeds.js
+
+      - name: Copy upstream feeds
+        run: |
+          cp /tmp/feed-x.json feed-x.json
+          cp /tmp/feed-podcasts.json feed-podcasts.json
+
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add feed-x.json feed-podcasts.json feed-blogs.json state-feed.json
-          git diff --cached --quiet || git commit -m "chore: update feeds [skip ci]"
-          git push
+          git add feed-x.json feed-podcasts.json feed-blogs.json
+          git diff --staged --quiet || (git commit -m "Daily feed update: $(date -I)" && git push)
