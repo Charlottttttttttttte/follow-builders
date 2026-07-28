@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T10:09:39.787Z",
+  "generatedAt": "2026-07-28T09:05:07.988Z",
   "sources": [
     {
       "source": "blog",
@@ -912,6 +912,36 @@
       "author": "",
       "description": "Opus 5: Richard III",
       "content": "Opus 5: Richard III"
+    },
+    {
+      "source": "blog",
+      "name": "Jim Nielsen",
+      "title": "Can the Tide of AI Investment Lift All Boats on the Web?",
+      "url": "https://blog.jim-nielsen.com/2026/tide-lifts-all-boats/",
+      "publishedAt": "Mon, 27 Jul 2026 19:00:00 GMT",
+      "author": "",
+      "description": "&lt;p&gt;&lt;a href=&quot;https://cloudfour.com/thinks/improvements-to-web-for-ai-should-benefit-all-users/&quot; &gt;Jason Grigsby has a great article&lt;/a&gt; where he surfaces an opinion from the Safari team about how AI agents shouldn’t get special treatment:&lt;/p&gt;\n&lt;blockquote&gt;\n&lt;p&gt;An agent acting on a user’s behalf is, in effect, &lt;strong&gt;assistive technology&lt;/strong&gt;: it should operate a site as the user would, and the site should not single it out for different treatment. &lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;p&gt;Jason synthesizes different discussions happening at standards levels to argue, in essence, that agents should be required to use existing technologies and solutions (APIs, semantics, etc.) rather than get their own bespoke ones. And where there are gaps in the platform, solutions should be centered around closing those gaps generally for everyone (vs. specifically for agents).&lt;/p&gt;\n&lt;p&gt;Imagine that! Take the billions being invested in AI and funnel it towards improving and enhancing the existing technology agents already use and profit from. No bespoke solutions just for AI, but generalized solutions everyone can benefit from.&lt;/p&gt;\n&lt;p&gt;In other words: allow the rising tide of AI investment to lift all boats in the platform because the web is for everyone. As Jason says:&lt;/p&gt;\n&lt;blockquote&gt;\n&lt;p&gt;If we’re solving this problem for AI, perhaps we can find a solution that works for end users too.&lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;p&gt;His suggestion being that maybe we should frame AI needs in the web platform the same way we do other needs in the web’s priority of constituents: user needs come before developer needs, implementor needs, spec writer needs — or even agent needs. (&lt;a href=&quot;https://blog.jim-nielsen.com/2025/thoughts-on-ax/&quot; &gt;UX over DX over AX&lt;/a&gt;.)&lt;/p&gt;\n&lt;p&gt;Now for the funny part. Here’s Jason:&lt;/p&gt;\n&lt;blockquote&gt;\n&lt;p&gt;let’s set aside for the moment the irony that AI is supposed to replace all of our jobs and become a super intelligence and at the same time we also need to add special AI training wheels for it to use the web.&lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;p&gt;It’s like that person you know who prides themselves on their independence, that they don’t bend to society and culture, and that they don’t need anyone or anything — oh, and by the way, could you spot them twenty bucks?&lt;/p&gt;\n\n    &lt;hr /&gt;\n    \n\n    &lt;p&gt;\n      Reply via:\n      \n\n      &lt;a\n        href=&quot;mailto:jimniels%2Bblog@gmail.com?subject=Re:%20blog.jim-nielsen.com/2026/tide-lifts-all-boats/&quot;\n        &gt;Email&lt;/a\n      &gt;\n      · &lt;a href=&quot;https://mastodon.social/@jimniels&quot;&gt;Mastodon&lt;/a&gt; ·\n\n      &lt;a href=&quot;https://bsky.app/profile/jim-nielsen.com&quot;&gt;Bluesky&lt;/a&gt;\n    &lt;/p&gt;",
+      "content": "&lt;p&gt;&lt;a href=&quot;https://cloudfour.com/thinks/improvements-to-web-for-ai-should-benefit-all-users/&quot; &gt;Jason Grigsby has a great article&lt;/a&gt; where he surfaces an opinion from the Safari team about how AI agents shouldn’t get special treatment:&lt;/p&gt;\n&lt;blockquote&gt;\n&lt;p&gt;An agent acting on a user’s behalf is, in effect, &lt;strong&gt;assistive technology&lt;/strong&gt;: it should operate a site as the user would, and the site should not single it out for different treatment. &lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;p&gt;Jason synthesizes different discussions happening at standards levels to argue, in essence, that agents should be required to use existing technologies and solutions (APIs, semantics, etc.) rather than get their own bespoke ones. And where there are gaps in the platform, solutions should be centered around closing those gaps generally for everyone (vs. specifically for agents).&lt;/p&gt;\n&lt;p&gt;Imagine that! Take the billions being invested in AI and funnel it towards improving and enhancing the existing technology agents already use and profit from. No bespoke solutions just for AI, but generalized solutions everyone can benefit from.&lt;/p&gt;\n&lt;p&gt;In other words: allow the rising tide of AI investment to lift all boats in the platform because the web is for everyone. As Jason says:&lt;/p&gt;\n&lt;blockquote&gt;\n&lt;p&gt;If we’re solving this problem for AI, perhaps we can find a solution that works for end users too.&lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;p&gt;His suggestion being that maybe we should frame AI needs in the web platform the same way we do other needs in the web’s priority of constituents: user needs come before developer needs, implementor needs, spec writer needs — or even agent needs. (&lt;a href=&quot;https://blog.jim-nielsen.com/2025/thoughts-on-ax/&quot; &gt;UX over DX over AX&lt;/a&gt;.)&lt;/p&gt;\n&lt;p&gt;Now for the funny part. Here’s Jason:&lt;/p&gt;\n&lt;blockquote&gt;\n&lt;p&gt;let’s set aside for the moment the irony that AI is supposed to replace all of our jobs and become a super intelligence and at the same time we also need to add special AI training wheels for it to use the web.&lt;/p&gt;\n&lt;/blockquote&gt;\n&lt;p&gt;It’s like that person you know who prides themselves on their independence, that they don’t bend to society and culture, and that they don’t need anyone or anything — oh, and by the way, could you spot them twenty bucks?&lt;/p&gt;\n\n    &lt;hr /&gt;\n    \n\n    &lt;p&gt;\n      Reply via:\n      \n\n      &lt;a\n        href=&quot;mailto:jimniels%2Bblog@gmail.com?subject=Re:%20blog.jim-nielsen.com/2026/tide-lifts-all-boats/&quot;\n        &gt;Email&lt;/a\n      &gt;\n      · &lt;a href=&quot;https://mastodon.social/@jimniels&quot;&gt;Mastodon&lt;/a&gt; ·\n\n      &lt;a href=&quot;https://bsky.app/profile/jim-nielsen.com&quot;&gt;Bluesky&lt;/a&gt;\n    &lt;/p&gt;"
+    },
+    {
+      "source": "blog",
+      "name": "dfarq",
+      "title": "Advantages and disadvantages of Windows NT 3.1",
+      "url": "https://dfarq.homeip.net/advantages-and-disadvantages-of-windows-nt-3-1/?utm_source=rss&#038;utm_medium=rss&#038;utm_campaign=advantages-and-disadvantages-of-windows-nt-3-1",
+      "publishedAt": "Mon, 27 Jul 2026 11:00:38 +0000",
+      "author": "",
+      "description": "I&#8217;ve talked a lot about the advantages and disadvantages of old milestone operating systems. But what were the advantages and disadvantages of Windows NT 3.1, first released July 27, 1993? That&#8217;s a fair question, and there are valid reasons it\nThe post Advantages and disadvantages of Windows NT 3.1 appeared first on The Silicon Underground.",
+      "content": "I&#8217;ve talked a lot about the advantages and disadvantages of old milestone operating systems. But what were the advantages and disadvantages of Windows NT 3.1, first released July 27, 1993? That&#8217;s a fair question, and there are valid reasons it\nThe post Advantages and disadvantages of Windows NT 3.1 appeared first on The Silicon Underground."
+    },
+    {
+      "source": "blog",
+      "name": "jyn",
+      "title": "i've started drawing again",
+      "url": "https://jyn.dev/i-ve-started-drawing-again/",
+      "publishedAt": "2026-07-16T00:00:00+00:00",
+      "author": "",
+      "description": "I just miss doing art. Don&#x27;t you?",
+      "content": "&lt;figure&gt;\n&lt;blockquote cite=&quot;https:&#x2F;&#x2F;clarkesworldmagazine.com&#x2F;kritzer_05_23&#x2F;&quot;&gt;\n&lt;p&gt;&lt;em&gt;I just miss doing art. Don’t you?&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;\n&lt;&#x2F;blockquote&gt;\n&lt;figcaption&gt;\n&lt;cite &gt;&lt;a href=&quot;https:&#x2F;&#x2F;clarkesworldmagazine.com&#x2F;kritzer_05_23&#x2F;&quot;&gt;Naomi Kritzer, &lt;em&gt;Better Living Through Algorithms&lt;&#x2F;em&gt;&lt;&#x2F;a&gt;&lt;&#x2F;cite&gt;\n&lt;&#x2F;figcaption&gt;\n&lt;&#x2F;figure&gt;\n&lt;p&gt;i bought myself some presents.&lt;&#x2F;p&gt;\n&lt;p&gt;&lt;img src=&quot;&#x2F;assets&#x2F;colored-pencils.webp&quot; alt=&quot; a picture of a table with a tall jar of colored pencils and the cap laying next to it. underneath is a sketchbook, which has a drawing of the pencils themselves. inside the drawing is another sketchbook, with a tiny miniature nested pencil drawing. &quot; &#x2F;&gt;&lt;&#x2F;p&gt;\n&lt;p&gt;i like them. they&#x27;re nice.&lt;&#x2F;p&gt;\n&lt;p&gt;&lt;img src=&quot;&#x2F;assets&#x2F;sunset.webp&quot; alt=&quot; a picture of a loose blank paper with a drawing of the sunset. in the distance are two mountains with an island nearby. in the midground are two sailboats. their names are just barely visible: STABERINDE and GREY MATTER. in the foreground are two people sitting on the beach on a wooden log. their footsteps trail off the page. one says to the other: &amp;quot;do you think the sun ever thinks about us?&amp;quot; &quot; &#x2F;&gt;&lt;&#x2F;p&gt;"
     }
   ],
   "rssSources": [
@@ -1377,10 +1407,10 @@
     }
   ],
   "stats": {
-    "blogPosts": 90,
+    "blogPosts": 93,
     "rssSources": 92,
     "rssSourcesFetched": 3,
     "rssSourcesTotal": 92,
-    "staticPosts": 88
+    "staticPosts": 90
   }
 }
