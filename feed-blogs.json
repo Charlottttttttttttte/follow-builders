@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-15T06:58:12.154Z",
+  "generatedAt": "2026-08-16T06:59:34.223Z",
   "sources": [
     {
       "source": "blog",
@@ -1212,6 +1212,26 @@
       "author": "",
       "description": "Easily the best show I&#039;ve seen at the Fringe.  For plot-related reasons, a television company asks a literary genius to create a &#34;pro-weapons sitcom&#34;.  It is a fast paced mix of the sitcoms 2012 and Episodes. The jokes come at a steady pace - some attack with the furiousity of bullets, others the the subtlety of a knife in the night.  All four of the cast are spectacular. Turning the…",
       "content": "Easily the best show I've seen at the Fringe.\n\nFor plot-related reasons, a television company asks a literary genius to create a \"pro-weapons sitcom\".\n\nIt is a fast paced mix of the sitcoms 2012 and Episodes. The jokes come at a steady pace - some attack with the furiousity of bullets, others the the subtlety of a knife in the night.\n\nAll four of the cast are spectacular. Turning the sometimes-stock characters into powerful avatars. The amoral Zuckerbergian horror of data driven decision making is the perfect manure in which to grow comedy roses.\n\nIt stands well against any classic farce and I hope it tours until the end of the world.\n\nA special shout out to the Pleasance Above for being the most comfortable venue in Edinburgh! Raked auditorium, cushioned seats, and air conditioning all make for a delightful theatrical experience."
+    },
+    {
+      "source": "blog",
+      "name": "Mitchell Hashimoto",
+      "title": "Superlogical",
+      "url": "https://mitchellh.com/writing/superlogical",
+      "publishedAt": "Wed, 29 Jul 2026 00:00:00 GMT",
+      "author": "",
+      "description": "",
+      "content": ""
+    },
+    {
+      "source": "blog",
+      "name": "Dynomight",
+      "title": "Thoughts I had while reading your comment",
+      "url": "https://dynomight.net/comment/",
+      "publishedAt": "2026-08-11T00:00:00+00:00",
+      "author": "",
+      "description": "with absolutely no indication of neuroticism",
+      "content": "This is a great and wonderful contribution and you seem really nice and I’d like to show some appreciation but your comment is so complete and flawless that I can’t think of anything intelligent to say so I guess I won’t respond at all, sorry.\n  \n  \n    This is a great and wonderful contribution and I have some further thoughts so I can respond naturally, great.\n  \n  \n    This is a great and wonderful contribution and I can’t think of anything intelligent to say but I have a joke that’s mildly amusing, I hope you don’t find it cringe or misinterpret it as disagreement or mockery or something.\n  \n  \n    This is a great and wonderful contribution and I agree with 90% of it, but I’d like to hedge on a few points, I guess I’ll point those out while stressing my overall agreement.\n  \n  \n    I utterly disagree with every single thing you said but this is still a great and wonderful contribution because you did a better job than me of representing the view I disagree with, still, it seems like everything has been said and we aren’t going to reach a consensus, so I’ll try to thread the needle of thanking you and conceding what I’m willing to concede without misrepresenting myself as being convinced or sounding dismissive or implying that we should have a lengthy back-and-forth.\n  \n  \n    Everything in your comment seems correct and I completely agree with it, but I’m confused because it seems like there’s some implied disagreement but I have no idea what that disagreement is.\n  \n  \n    This comment seems well-intentioned but it’s based on a epistemology so different from mine that the gap appears unbridgeable.\n  \n  \n    This comment explains what I was trying to say much better than I did, how did you do that.\n  \n  \n    This comment brings up a point that’s worth taking seriously, but the whole purpose of my post was to address this particular objection, so I’m confused why it’s being brought up as novel without any acknowledgement that I have at least attempted to refute it.\n  \n  \n    This comment politely brings up a minor-ish point that I did address somewhere, which is completely fine, it’s unreasonable to expect people to scour every nook and cranny of a post before responding, and other people are surely thinking the same thing, but given that I’ve already written my thoughts on this point, I’d like to link to them without implying that you did anything wrong, but I’m not quite sure how to do that, hmmm.\n  \n  \n    This comment points out a clear mistake, I should acknowledge it and thank you for the correction.\n  \n  \n    This comment points out a clear mistake but is also dripping with sarcasm and implied malintent, why you gotta be like that.\n  \n  \n    This comment is completely confused in a way that reveals to me that my post is itself confusing and I should have written it differently, damn it.\n  \n  \n    This comment is egregiously mean and makes no useful contribution at all, I guess I’ll delete it.\n  \n  \n    This comment is vaguely mean but also makes some interesting points, lest my garden die by pacifism I guess I’ll respond to the substantive points while also gently reminding you that I am a delicate flower and I enjoy human kindness, this will be super awkward but contrary to what you might expect, often works.\n  \n  \n    This comment is about aspartame, I can’t help myself, I absolutely cannot help myself.\n  \n  \n    Are you an AI agent?\n  \n  \n    This comment is thinly-veiled attempt to promote your own blog post, but you needn’t have veiled at all, I want more blogs and more bloggers and especially more blog posts engaging with each other, and I understand that there are today ~zero places you can promote yourself without immediately getting attacked, the social norm that it’s gauche to link to your own posts must change, so please go crazy provided it’s relevant, you aren’t constantly promoting the same thing, and (ideally) you aren’t blogging about a bunch of tweets."
     }
   ],
   "rssSources": [
@@ -1677,13 +1697,13 @@
     }
   ],
   "stats": {
-    "blogPosts": 120,
+    "blogPosts": 122,
     "rssSources": 92,
     "rssSourcesFetched": 2,
     "rssSourcesTotal": 92,
-    "staticPosts": 119
+    "staticPosts": 120
   },
   "errors": [
-    "No items from lcamtuf"
+    "No items from Chris Siebenmann"
   ]
 }
