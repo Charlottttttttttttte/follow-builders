@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01T11:41:05.538Z",
+  "generatedAt": "2026-09-02T11:21:10.685Z",
   "sources": [
     {
       "source": "blog",
@@ -2001,9 +2001,9 @@
     "rssSources": 92,
     "rssSourcesFetched": 2,
     "rssSourcesTotal": 92,
-    "staticPosts": 151
+    "staticPosts": 152
   },
   "errors": [
-    "No items from Gwern"
+    "No items from Beej"
   ]
 }
