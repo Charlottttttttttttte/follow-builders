@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-04T12:24:22.221Z",
+  "generatedAt": "2026-10-05T14:43:58.101Z",
   "sources": [
     {
       "source": "blog",
@@ -2539,8 +2539,11 @@
   "stats": {
     "blogPosts": 206,
     "rssSources": 92,
-    "rssSourcesFetched": 3,
+    "rssSourcesFetched": 2,
     "rssSourcesTotal": 92,
     "staticPosts": 206
-  }
+  },
+  "errors": [
+    "No items from Works on My Machine"
+  ]
 }
