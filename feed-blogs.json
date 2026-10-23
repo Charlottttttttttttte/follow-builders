@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T11:55:56.227Z",
+  "generatedAt": "2026-10-23T11:41:50.165Z",
   "sources": [
     {
       "source": "blog",
@@ -2849,8 +2849,11 @@
   "stats": {
     "blogPosts": 237,
     "rssSources": 92,
-    "rssSourcesFetched": 3,
+    "rssSourcesFetched": 2,
     "rssSourcesTotal": 92,
-    "staticPosts": 234
-  }
+    "staticPosts": 237
+  },
+  "errors": [
+    "No items from Joan Westenberg"
+  ]
 }
