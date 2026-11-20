@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T15:46:48.736Z",
+  "generatedAt": "2026-11-20T15:29:17.244Z",
   "sources": [
     {
       "source": "blog",
@@ -3339,12 +3339,11 @@
   "stats": {
     "blogPosts": 286,
     "rssSources": 92,
-    "rssSourcesFetched": 1,
+    "rssSourcesFetched": 2,
     "rssSourcesTotal": 92,
-    "staticPosts": 285
+    "staticPosts": 286
   },
   "errors": [
-    "No items from Skyfall",
-    "No items from Gary Marcus"
+    "No items from Rachel by the Bay"
   ]
 }
